@@ -1,7 +1,8 @@
 export const ROUTES = {
   HOME_PAGE: "/",
   PENDING: "/dashboard/",
-  
+  WINNER_DECLARATION: "/dashboard/winner-declaration",
+  WINNER_LIST: "/dashboard/winner-list",
   
 };
 

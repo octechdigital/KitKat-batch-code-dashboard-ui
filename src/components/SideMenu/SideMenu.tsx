@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CampaignOutlined";
 import {
@@ -50,10 +51,15 @@ const SideMenu = () => {
       icon: "pending",
     },
     // {
-    //   title: "Approved",
-    //   route: ROUTES.APPROVED,
-    //   icon: "approved",
+    //   title: "Winner Declaration",
+    //   route: ROUTES.WINNER_DECLARATION,
+    //   icon: "pending",
     // },
+    {
+      title: "Winner List",
+      route: ROUTES.WINNER_LIST,
+      icon: "approved",
+    },
     // {
     //   title: "Rejected",
     //   route: ROUTES.REJECTED,

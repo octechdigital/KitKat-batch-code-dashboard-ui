@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import "./Button.scss";
 import API from "../../api";
 import { useState, memo } from "react";
@@ -10,6 +12,7 @@ import { GenericRecord } from "../../interface/api";
 import CircularProgress from "@mui/material/CircularProgress";
 // import AddBatchCode from "../userPopup/AddBatchCode";
 import AddBatchCodeModal from "../userPopup/AddBatchCodeModal";
+import WinnerDeclarationModal from "../userPopup/WinnerDeclarationModal";
 
 interface ViewButtonRendererProps {
   props: any;
@@ -37,6 +40,7 @@ const ViewButtonRenderer: React.FC<ViewButtonRendererProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [openAddBatch, setOpenAddBatch] = useState(false);
+  const [openWinnerDeclaration, setOpenWinnerDeclaration] = useState(false);
 
   const id = props?.data?.id;
   const mediaType = getMediaTypeFromSrc(props?.data?.url);
@@ -87,6 +91,11 @@ const ViewButtonRenderer: React.FC<ViewButtonRendererProps> = ({
       <AddBatchCodeModal
         open={openAddBatch}
         onClose={() => setOpenAddBatch(false)}
+        userId={id}
+      />
+      <WinnerDeclarationModal
+        open={openWinnerDeclaration}
+        onClose={() => setOpenWinnerDeclaration(false)}
         userId={id}
       />
     </>
