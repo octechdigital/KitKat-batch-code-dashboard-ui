@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, {
   ReactNode,
   useCallback,
@@ -25,9 +27,9 @@ import CustomNoRowsOverlay from "../../components/skelitonTable/CustomNoRowsOver
 import { store } from "../../store/store";
 import { setIsRefreshed } from "../../store/slices/userSlice";
 import DynamicLottie from "../../assets/lottie/DynamicLottie";
-import { Add } from "@mui/icons-material";
-import AddBatchCodeModal from "../userPopup/AddBatchCodeModal";
 import AddIcon from '@mui/icons-material/Add';
+import AddBatchCodeModal from "../userPopup/AddBatchCodeModal";
+import WinnerDeclarationModal from "../userPopup/WinnerDeclarationModal";
 
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -46,6 +48,7 @@ type GenericAgGridProps = {
   columnDefs: any[];
   refreshStatus: boolean;
   lottieFile: ReactNode;
+  hideActionButtons?: boolean;
 };
 
 const GenericAgGrid: React.FC<GenericAgGridProps> = ({
@@ -54,13 +57,15 @@ const GenericAgGrid: React.FC<GenericAgGridProps> = ({
   columnDefs,
   refreshStatus,
   lottieFile,
+  hideActionButtons = false,
 }) => {
   const gridRef = useRef<AgGridReact>(null);
   const containerStyle = useMemo(() => ({ width: "100%", height: "69%" }), []);
   const gridStyle = useMemo(() => ({ height: "100%", width: "100%" }), []);
   const [rowData, setRowData] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [openAddBatch, setOpenAddBatch] = useState(false); // AddBatchCode
+  const [openAddBatch, setOpenAddBatch] = useState(false);
+  const [openWinnerDeclaration, setOpenWinnerDeclaration] = useState(false);
 
   const defaultColDef = useMemo(
     () => ({
@@ -71,9 +76,11 @@ const GenericAgGrid: React.FC<GenericAgGridProps> = ({
     }),
     []
   );
+
   const onBtnExport = useCallback(() => {
     gridRef.current!.api.exportDataAsCsv();
   }, []);
+
   const fetchTableData = useCallback(() => {
     fetchData()
       .then((res) => {
@@ -99,7 +106,6 @@ const GenericAgGrid: React.FC<GenericAgGridProps> = ({
   }, [fetchTableData]);
 
   useEffect(() => {
-    // console.log("refreshStatus changed:", refreshStatus);
     if (refreshStatus) fetchTableData();
   }, [refreshStatus, fetchTableData]);
 
@@ -139,32 +145,49 @@ const GenericAgGrid: React.FC<GenericAgGridProps> = ({
           />
           <div className="button-wrapper">
             <button
-              style={{
-                fontSize: "18px",
-              }}
+              style={{ fontSize: "18px" }}
               className="add-campaign-button download"
               onClick={onBtnExport}
             >
-              <DynamicLottie type="download" shouldPlay  />
+              <DynamicLottie type="download" shouldPlay />
             </button>
-            <button
-              style={{
-                fontSize: "15px",
-                
-              }}
-              className="add-campaign-button "
-              onClick={() => setOpenAddBatch(true)}
-            >
-              <AddIcon sx={{ fontSize: "18px" }} /> Add Batch Code
-            </button>
+
+            {!hideActionButtons && (
+              <>
+                <button
+                  style={{ fontSize: "15px" }}
+                  className="add-campaign-button"
+                  onClick={() => setOpenAddBatch(true)}
+                >
+                  <AddIcon sx={{ fontSize: "18px" }} /> Add Batch Code
+                </button>
+                <button
+                  style={{ fontSize: "15px" }}
+                  className="add-campaign-button"
+                  onClick={() => setOpenWinnerDeclaration(true)}
+                >
+                  <AddIcon sx={{ fontSize: "18px" }} /> Make Winner
+                </button>
+              </>
+            )}
           </div>
 
-          <AddBatchCodeModal
-            open={openAddBatch}
-            onClose={() => setOpenAddBatch(false)}
-            userId={123} // replace with real ID
-          />
+          {!hideActionButtons && (
+            <>
+              <AddBatchCodeModal
+                open={openAddBatch}
+                onClose={() => setOpenAddBatch(false)}
+                userId={123}
+              />
+              <WinnerDeclarationModal
+                open={openWinnerDeclaration}
+                onClose={() => setOpenWinnerDeclaration(false)}
+                userId={123}
+              />
+            </>
+          )}
         </div>
+
         <div style={gridStyle} className="ag-theme-alpine">
           <AgGridReact
             ref={gridRef}

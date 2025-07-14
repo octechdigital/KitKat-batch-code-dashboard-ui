@@ -5,6 +5,8 @@ import Login from "../pages/login/Login.tsx";
 import Pending from "../pages/dashboard/Pending.tsx";
 // import Offers from "../pages/dashboard/Approve.tsx";
 import PrivateRoute from "../helpers/PrivateRoute.tsx";
+import WinnerDeclaration from "../pages/dashboard/WinnerDeclaration.tsx";
+import Wiiner_List from "../pages/dashboard/Wiiner_List.tsx";
 // import Rejected from "../pages/dashboard/Rejected.tsx";
 
 export const router = createBrowserRouter(
@@ -25,10 +27,15 @@ export const router = createBrowserRouter(
           path: ROUTES.PENDING,
           element: <Pending />,
         },
-        // {
-        //   path: ROUTES.APPROVED,
-        //   element: <Offers />,
-        // },
+        {
+          index: true,
+          path: ROUTES.WINNER_DECLARATION,
+          element: <WinnerDeclaration />,
+        },
+        {
+          path: ROUTES.WINNER_LIST,
+          element: <Wiiner_List />,
+        },
         // {
         //   path: ROUTES.REJECTED,
         //   element: <Rejected />,

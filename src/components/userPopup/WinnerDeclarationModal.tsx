@@ -23,24 +23,29 @@ import { showToast } from "../../lib/utils";
 import API from "../../api";
 import { useGlobalLoaderContext } from "../../helpers/GlobalLoader";
 import { useAppSelector } from "../../store/hooks";
-import { AddCodeResponse } from "../../interface/api";
 
-const isValidBatchCode = (code: string) => /^[a-zA-Z0-9]{10}$/.test(code);
-
-interface AddBatchCodeModalProps {
+interface WinnerDeclarationModalProps {
   open: boolean;
   onClose: () => void;
   userId: number;
 }
 
-const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
+const isValidMobile = (mobile: string): boolean => {
+  return /^[6-9]\d{9}$/.test(mobile);
+};
+
+const WinnerDeclarationModal: React.FC<WinnerDeclarationModalProps> = ({
   open,
   onClose,
 }) => {
   const [mode, setMode] = useState<"manual" | "csv">("manual");
-  const [batchCode, setBatchCode] = useState("");
-  const [csvCodes, setCsvCodes] = useState<string[]>([]);
+  const [mobile, setMobile] = useState("");
+  const [csvMobiles, setCsvMobiles] = useState<string[]>([]);
   const [fileName, setFileName] = useState("");
+  const [selectedDate, setSelectedDate] = useState(
+    new Date().toISOString().split("T")[0]
+  );
+
   const dispatch = useDispatch<AppDispatch>();
   const { showLoader, hideLoader } = useGlobalLoaderContext();
   const isHeaderRefresh = useAppSelector((state) => state.user.isHeaderRefresh);
@@ -51,24 +56,23 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
   ) => {
     if (newMode) {
       setMode(newMode);
-      setBatchCode("");
-      setCsvCodes([]);
+      setMobile("");
+      setCsvMobiles([]);
       setFileName("");
     }
   };
 
   const handleManualChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.toUpperCase();
-    if (value.length <= 10 && /^[a-zA-Z0-9]*$/.test(value)) {
-      setBatchCode(value);
+    const value = e.target.value;
+    if (/^\d*$/.test(value) && value.length <= 10) {
+      setMobile(value);
     }
   };
 
   const handleFileChange = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
-    // Reset state
-    setCsvCodes([]);
+    setCsvMobiles([]);
     setFileName("");
 
     if (!file) {
@@ -85,65 +89,72 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
       const text = await file.text();
       const lines = text
         .split(/\r?\n/)
-        .map((line) => line.trim().replace(/^"|"$/g, "").toUpperCase())
-        .filter((line) => line && line !== "CODE");
+        .map((line) => line.trim().replace(/^"|"$/g, ""))
+        .filter((line) => isValidMobile(line));
 
       if (lines.length === 0) {
-        showToast("error", "No valid batch codes found in the CSV.");
+        showToast("error", "No valid mobile numbers found.");
         return;
       }
 
       if (lines.length > 200) {
-        showToast("error", "You can upload a maximum of 200 batch codes only.");
+        showToast("error", "Maximum 200 mobile numbers allowed.");
         return;
       }
 
-      setCsvCodes(lines);
+      setCsvMobiles(lines);
       setFileName(file.name);
     } catch {
       showToast("error", "Failed to read the file. Please try again.");
     }
   };
 
-  const handleSubmit = async () => {
-    showLoader("Submitting batch code(s)...");
+ const handleSubmit = async () => {
+  showLoader("Declaring winner(s)...");
 
-    try {
-      const payload =
-        mode === "manual" ? { code: batchCode } : { codes: csvCodes };
+  try {
+    const payload =
+      mode === "manual"
+        ? { mobile, date: selectedDate }
+        : { mobiles: csvMobiles, date: selectedDate };
 
-      const response = await API.userAction<AddCodeResponse>("addCode", payload);
-      const existingCodes = response.exist ?? [];
+    const response = await API.userAction("declareWinner", payload);
 
+    // If backend returns something like success: false or empty data
+    if (!response) {
+      showToast("error", "User not found for winner");
+    } else {
       dispatch(setIsRefreshed(true));
       dispatch(setIsHeaderRefreshed(!isHeaderRefresh));
 
-      if (existingCodes.length > 0) {
-        const formattedCodes = existingCodes.join(", ");
-        showToast("exist", `The following code(s) already exist:\n${formattedCodes}`);
-      } else {
-        showToast("success", response.message || "Batch code(s) added successfully!");
-      }
-
+      showToast("success", "Winner(s) declared successfully!");
       handleClose();
-    } catch (error: any) {
-      showToast("error", error?.response?.data?.message || "Something went wrong");
-    } finally {
-      hideLoader();
     }
-  };
+  } catch (error: any) {
+    const message =
+      error?.response?.data?.message?.toLowerCase?.().includes("not found")
+        ? "User not found for winner"
+        : error?.response?.data?.message || "Submission failed";
+
+    showToast("error", message);
+  } finally {
+    hideLoader();
+  }
+};
+
 
   const handleClose = () => {
-    setBatchCode("");
-    setCsvCodes([]);
+    setMobile("");
+    setCsvMobiles([]);
     setFileName("");
     setMode("manual");
+    setSelectedDate(new Date().toISOString().split("T")[0]);
     onClose();
   };
 
   const isSubmitEnabled =
-    (mode === "manual" && isValidBatchCode(batchCode)) ||
-    (mode === "csv" && csvCodes.length > 0);
+    (mode === "manual" && isValidMobile(mobile)) ||
+    (mode === "csv" && csvMobiles.length > 0);
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="xs" fullWidth>
@@ -156,7 +167,7 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
         </IconButton>
 
         <Typography fontWeight="bold" fontSize={20} textAlign="center">
-          Britannia Breads – Batch Code Entry
+          Winner Declaration
         </Typography>
 
         <Box mt={3} textAlign="center">
@@ -166,24 +177,24 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
             onChange={handleModeChange}
             fullWidth
           >
-            <ToggleButton value="manual">Enter Code</ToggleButton>
-            <ToggleButton value="csv">Upload CSV</ToggleButton>
+            {/* <ToggleButton value="manual">Enter Mobile</ToggleButton> */}
+            {/* <ToggleButton value="csv">Upload CSV</ToggleButton> */}
           </ToggleButtonGroup>
         </Box>
 
         {mode === "manual" && (
-          <Box mt={3}>
-            <Typography fontWeight="bold">Batch Code</Typography>
+          <Box mt={0}>
+            <Typography fontWeight="bold">Mobile Number</Typography>
             <TextField
-              value={batchCode}
+              value={mobile}
               onChange={handleManualChange}
-              placeholder="Enter code (10 characters)"
+              placeholder="Enter 10-digit mobile"
               fullWidth
               inputProps={{ maxLength: 10 }}
-              error={batchCode.length > 0 && !isValidBatchCode(batchCode)}
+              error={mobile.length > 0 && !isValidMobile(mobile)}
               helperText={
-                batchCode.length > 0 && !isValidBatchCode(batchCode)
-                  ? "Only letters and numbers allowed (10 chars)."
+                mobile.length > 0 && !isValidMobile(mobile)
+                  ? "Must be 10 digits starting with 6-9"
                   : " "
               }
             />
@@ -206,13 +217,25 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
                 onChange={handleFileChange}
               />
             </Button>
-            {csvCodes.length > 0 && (
+            {csvMobiles.length > 0 && (
               <Typography mt={1} variant="body2" color="green">
-                {csvCodes.length} batch code(s) loaded
+                {csvMobiles.length} mobile number(s) loaded
               </Typography>
             )}
           </Box>
         )}
+
+        {/* Date Field */}
+        <Box mt={1}>
+          <Typography fontWeight="bold">Select Date</Typography>
+          <TextField
+            type="date"
+            value={selectedDate}
+            onChange={(e) => setSelectedDate(e.target.value)}
+            fullWidth
+            InputLabelProps={{ shrink: true }}
+          />
+        </Box>
 
         <Button
           sx={{ mt: 4, mb: 2 }}
@@ -228,4 +251,4 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
   );
 };
 
-export default AddBatchCodeModal;
+export default WinnerDeclarationModal;
