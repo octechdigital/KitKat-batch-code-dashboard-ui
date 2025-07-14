@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react';
 import {
   Box,
@@ -9,11 +10,12 @@ import {
   Snackbar,
   Alert
 } from '@mui/material';
-import axios from 'axios';
+import { showToast } from '../../lib/utils'; // optional, if you use toast elsewhere
+import API from '../../api'; // your custom API instance
 
 const WinnerDeclaration = () => {
   const [mobile, setMobile] = useState('');
-  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]); // default: today
+  const [selectedDate, setSelectedDate] = useState(new Date().toISOString().split('T')[0]);
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -27,38 +29,35 @@ const WinnerDeclaration = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!/^\d{10}$/.test(mobile)) {
+    if (!/^[6-9]\d{9}$/.test(mobile)) {
       setSnackbar({
         open: true,
-        message: 'Enter a valid 10-digit mobile number',
+        message: 'Enter a valid 10-digit mobile number starting with 6-9',
         severity: 'error',
       });
       return;
     }
 
-    const payload = {
-      mobile,
-      date: selectedDate,
-    };
-
     try {
-      const response = await axios.post(
-        'https://your-backend-url.com/api/winner',
-        payload
-      );
+      const response = await API.userAction("createWinner", {
+        mobile,
+        date: selectedDate,
+      });
+
       setSnackbar({
         open: true,
-        message: 'Winner declared successfully!',
+        message: response.message || 'Winner declared successfully!',
         severity: 'success',
       });
-      console.log('Success:', response.data);
+
       setMobile('');
       setSelectedDate(new Date().toISOString().split('T')[0]);
-    } catch (error) {
-      console.error('Error:', error);
+    } catch (error: any) {
+      const errorMessage =
+        error?.response?.data?.message || 'Failed to declare winner. Try again.';
       setSnackbar({
         open: true,
-        message: 'Failed to declare winner. Try again.',
+        message: errorMessage,
         severity: 'error',
       });
     }
@@ -76,7 +75,7 @@ const WinnerDeclaration = () => {
         </Typography>
       </Box>
 
-      {/* Form Section */}
+      {/* Form */}
       <Paper elevation={3} sx={{ p: 3 }}>
         <form onSubmit={handleSubmit}>
           <Box display="flex" flexDirection="column" gap={2}>
@@ -99,13 +98,13 @@ const WinnerDeclaration = () => {
               required
             />
             <Button variant="contained" color="primary" type="submit">
-              Winner Declaration
+              Declare Winner
             </Button>
           </Box>
         </form>
       </Paper>
 
-      {/* Snackbar Notification */}
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

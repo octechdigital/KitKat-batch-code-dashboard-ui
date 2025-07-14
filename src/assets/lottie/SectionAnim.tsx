@@ -4,7 +4,7 @@ import approveAnimationData from "./approve-tick.json";
 import pendingAnimationData from "./pending.json";
 import rejectedAnimationData from "./rejected.json";
 import homeAnimationData from "./Home.json";
-import winnerAnimationData from "./Trophy.json";
+import winnerAnimationData from "./winner.json";
 
 interface SectionAnimProps {
   type: "pending" | "approved" | "rejected" | "home" | "winner";

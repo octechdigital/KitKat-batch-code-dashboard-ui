@@ -109,39 +109,34 @@ const WinnerDeclarationModal: React.FC<WinnerDeclarationModalProps> = ({
     }
   };
 
- const handleSubmit = async () => {
-  showLoader("Declaring winner(s)...");
+  const handleSubmit = async () => {
+    showLoader("Declaring winner(s)...");
 
-  try {
-    const payload =
-      mode === "manual"
-        ? { mobile, date: selectedDate }
-        : { mobiles: csvMobiles, date: selectedDate };
+    try {
+      const payload =
+        mode === "manual"
+          ? { mobile, date: selectedDate }
+          : { mobiles: csvMobiles, date: selectedDate };
 
-    const response = await API.userAction("declareWinner", payload);
+      const response = await API.userAction("createWinner", payload);
 
-    // If backend returns something like success: false or empty data
-    if (!response) {
-      showToast("error", "User not found for winner");
-    } else {
+      // ✅ Assuming success if no error thrown
+      showToast(
+        "success",
+        response?.message || "Winner(s) declared successfully!"
+      );
       dispatch(setIsRefreshed(true));
       dispatch(setIsHeaderRefreshed(!isHeaderRefresh));
-
-      showToast("success", "Winner(s) declared successfully!");
       handleClose();
+    } catch (error: any) {
+      // ✅ Only show backend error message if request failed
+      const message =
+        error?.response?.data?.message || "Submission failed. Try again.";
+      showToast("error", message);
+    } finally {
+      hideLoader();
     }
-  } catch (error: any) {
-    const message =
-      error?.response?.data?.message?.toLowerCase?.().includes("not found")
-        ? "User not found for winner"
-        : error?.response?.data?.message || "Submission failed";
-
-    showToast("error", message);
-  } finally {
-    hideLoader();
-  }
-};
-
+  };
 
   const handleClose = () => {
     setMobile("");
