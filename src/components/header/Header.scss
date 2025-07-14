@@ -1,0 +1,56 @@
+@use "../../styles/common.scss";
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  p {
+    margin: 0;
+  }
+  .title {
+    font-family: Inter;
+    color: var(--text);
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+  .user-profile {
+    display: flex;
+    align-items: center;
+    column-gap: 0.5rem;
+    padding: 0.5rem;
+    .p-l {
+      .username {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .role {
+        font-size: 0.75rem;
+        font-weight: 400;
+        color: var(--text-grey);
+        text-align: end;
+      }
+    }
+    .p-r {
+      display: flex;
+      align-items: center;
+      //   column-gap: 0.1rem;
+      .user-icon {
+        color: var(--blue);
+      }
+      .arrow {
+        color: var(--text-grey);
+        cursor: pointer;
+        // transform: rotate(180deg);
+        // transition: transform 0.3s ease;
+      }
+    }
+  }
+}
+.user-cards-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  padding: 1rem 0;
+}

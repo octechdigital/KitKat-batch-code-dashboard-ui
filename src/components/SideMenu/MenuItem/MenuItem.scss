@@ -1,0 +1,54 @@
+@use "../../../styles/common" as common;
+
+.menu-item {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  //padding: .5vh 0 0.5vh 0;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  left: 20px;
+  margin-bottom: 4vh;
+  font-family: $Poppins-Medium;
+  color: #000;
+  .icon {
+    svg {
+      font-size: 30px;
+    }
+  }
+
+  &.active {
+    width: max-content;
+    background-color: $light_blue;
+    color: #ffffff;
+    border-radius: 5px;
+
+    .icon {
+      color: #ffffff;
+      width: 0;
+    }
+  }
+
+  .icon {
+    padding: 5px 35px 34px 5px;
+  }
+
+  .title-wrapper {
+    flex: 1;
+    width: 0;
+    transition: all 0.5s;
+
+    &.expanded {
+      font-size: 18px;
+      width: auto;
+    }
+
+    .title {
+      width: 100%;
+      overflow: hidden;
+      margin: 0;
+      padding: 0 7px 0 10px;
+    }
+  }
+}

@@ -1,0 +1,32 @@
+@use "../../styles/common.scss";
+
+.user-card {
+  display: flex;
+  padding: 0.75rem 1rem;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex: 1 0 0;
+  row-gap: 1rem;
+  border-radius: 16px;
+  border: 1px solid #e6e6e6;
+  background: #fff;
+  img {
+    max-width: 40px;
+  }
+  p {
+    margin: 0;
+  }
+  .user-card-title {
+    color: var(--Foundation-Black-black-200, #8a8a8b);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: normal;
+  }
+  .user-card-count {
+    color: var(--Foundation-Black-black-500, #181d1f);
+    font-size: 1.25rem;
+    font-weight: 700;
+    // line-height: normal;
+  }
+}

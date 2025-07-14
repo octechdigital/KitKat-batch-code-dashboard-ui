@@ -1,0 +1,23 @@
+@use "./@mixins" as mixins;
+
+:root {
+  --white: #ffffff;
+  --black: #000000;
+  --green: #209c2d;
+  --green-dark: #268763;
+  --yellow: #fbff47;
+  --red: #ed1c24;
+  --blue: #4a3aff;
+  --dark-blue: #3c2fcc;
+  --text: #181d1f;
+  --text-grey: #545556;
+  --text-highlight: #1e76d4;
+  --border-grey: #bebebe;
+  --login-bg: #fdfdfd;
+  --background: linear-gradient(
+    0deg,
+    rgba(254, 255, 251, 0.1) 0%,
+    rgba(201, 227, 35, 0.1) 25%,
+    rgba(120, 208, 255, 0.1) 100%
+  );
+}

@@ -1,0 +1,162 @@
+@use "../../styles/common" as common;
+
+.side-menu {
+  background-color: var(--blue);
+  height: 100vh;
+  height: 100svh;
+  width: 80px;
+  color: #ffffff;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.5s;
+  overflow: hidden;
+  @media screen and (max-width: 768px) {
+    // background-color: #1c2db0;
+    width: auto;
+    position: absolute;
+    z-index: 5;
+    height: auto;
+    .content {
+      display: none;
+    }
+    .footer {
+      display: none;
+    }
+    .head {
+      background-color: var(--white);
+    }
+  }
+
+  &.expanded {
+    width: 220px;
+    margin: 1rem 0 1rem 1rem;
+    border-radius: 0.5rem;
+    height: 95vh;
+    height: 95svh;
+    @media screen and (max-width: 768px) {
+      width: 80%;
+      max-width: 450px;
+      position: absolute;
+      height: 100%;
+      transition: all 1s ease;
+      transform: translateX(0);
+      .close-button {
+        display: flex;
+        justify-content: end;
+        color: var(--white);
+        background-color: transparent;
+
+        button {
+          background-color: transparent;
+          position: relative;
+          top: 2vh;
+        }
+      }
+      .head {
+        background-color: transparent;
+
+        .logo {
+          max-width: 145px;
+        }
+      }
+      .content {
+        display: block;
+      }
+      .footer {
+        display: block;
+      }
+    }
+  }
+
+  .close-button {
+    display: none;
+  }
+
+  .head {
+    padding: 30px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100px;
+
+    .logo {
+      max-width: 65px;
+    }
+
+    svg {
+      cursor: pointer;
+      color: var(--white);
+      @media screen and (max-width: 768px) {
+        color: var(--white);
+        background-color: #4a3aff;
+        border-radius: 50%;
+        padding: 4px;
+      }
+    }
+  }
+
+  .MuiListItemButton-root {
+    padding: 15px;
+    border-radius: 0.5rem;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--white);
+    margin-top: 0.5rem;
+
+    .MuiListItemIcon-root {
+      min-width: 40px;
+    }
+    &:hover {
+      background-color: rgb(6, 6, 135);
+    }
+  }
+
+  .MuiCollapse-root {
+    background-color: var(--white);
+  }
+
+  .content {
+    flex: 1;
+    overflow: hidden;
+    margin: 0 auto;
+    margin-bottom: 1vh;
+    width: 80%;
+    svg {
+      color: var(--white);
+    }
+
+    .MuiListItemText-root {
+      color: var(--white);
+    }
+
+    .MuiCollapse-root {
+      background-color: transparent;
+      color: var(--white);
+    }
+
+    .Mui-selected {
+      background-color: var(--dark-blue);
+
+      svg {
+        color: #ffffff;
+      }
+
+      .MuiListItemText-root {
+        color: #ffffff;
+      }
+      &:hover {
+        background-color: rgb(6, 6, 135);
+      }
+    }
+  }
+
+  .footer {
+    color: var(--white);
+    position: relative;
+    font-family: Outfit;
+    margin: 0.5rem 1.5rem;
+    svg {
+      color: var(--white);
+    }
+  }
+}

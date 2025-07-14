@@ -1,0 +1,9 @@
+
+export const SET_USER_ID = "SET_USER_ID";
+export const CLEAR_ACCESS_DETAILS = "CLEAR_ACCESS_DETAILS";
+export const SET_ACCESS_TOKEN = "SET_ACCESS_TOKEN";
+export const SET_USER_DETAILS = "SET_USER_DETAILS";
+export const CLEAR_USER_DETAILS = "CLEAR_USER_DETAILS";
+export const USER_SCORE = "USER_SCORE";
+export const IS_WINNER = "IS_WINNER";
+
