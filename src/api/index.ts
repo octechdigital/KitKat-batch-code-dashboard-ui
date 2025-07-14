@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import {
   BaseResponse,
@@ -66,6 +67,14 @@ class APIS {
 
   async getPendingData(): Promise<GetAnyDataResponse> {
     return authorisedApiCall("/admin/getCodeInfo", {}, "GET")
+      .then(fetchHandler)
+      .then(responseHelper)
+      .catch(defaultCatch)
+      .finally();
+  }
+// get winner data
+  async getWinnerData(): Promise<GetAnyDataResponse> {
+    return authorisedApiCall("/admin/getWinnersInfo", {}, "GET")
       .then(fetchHandler)
       .then(responseHelper)
       .catch(defaultCatch)

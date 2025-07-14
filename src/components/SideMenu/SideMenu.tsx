@@ -48,7 +48,7 @@ const SideMenu = () => {
     {
       title: "Dashboard",
       route: ROUTES.PENDING,
-      icon: "pending",
+      icon: "home",
     },
     // {
     //   title: "Winner Declaration",
@@ -58,7 +58,7 @@ const SideMenu = () => {
     {
       title: "Winner List",
       route: ROUTES.WINNER_LIST,
-      icon: "approved",
+      icon: "winner",
     },
     // {
     //   title: "Rejected",

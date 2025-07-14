@@ -30,8 +30,8 @@ const Wiiner_List: React.FC = () => {
 
   const winnerListColumnDefs = [
     { headerName: "Mobile", field: "mobile" },
-    { headerName: "Batch Code", field: "code" },
-    { headerName: "Reward Code", field: "architectMobile" },
+    { headerName: "Batch Code", field: "batchCode" },
+    { headerName: "Reward Code", field: "rewardCode" },
     { headerName: "Date", field: "date" },
   ];
 
@@ -39,11 +39,11 @@ const Wiiner_List: React.FC = () => {
     <>
       <Header />
       <GenericAgGrid
-        title="Related Batch Codes"
+        title="Related Winner List"
         columnDefs={winnerListColumnDefs}
-        fetchData={API.getPendingData}
+        fetchData={API.getWinnerData}
         refreshStatus={isRefreshed}
-        lottieFile={<SectionAnim type="pending" shouldPlay={true} />}
+        lottieFile={<SectionAnim type="winner" shouldPlay={true} />}
         hideActionButtons={true}
       />
     </>

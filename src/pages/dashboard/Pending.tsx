@@ -59,7 +59,7 @@ const Pending: React.FC = () => {
         columnDefs={pendingColumnDefs}
         fetchData={API.getPendingData}
         refreshStatus={isRefreshed}
-        lottieFile={<SectionAnim type="pending" shouldPlay={true} />}
+        lottieFile={<SectionAnim type="home" shouldPlay={true} />}
       />
 
       <ActiveInactivePopup

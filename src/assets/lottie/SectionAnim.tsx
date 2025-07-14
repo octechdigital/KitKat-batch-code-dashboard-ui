@@ -3,9 +3,11 @@ import Lottie, { LottieRefCurrentProps } from "lottie-react";
 import approveAnimationData from "./approve-tick.json";
 import pendingAnimationData from "./pending.json";
 import rejectedAnimationData from "./rejected.json";
+import homeAnimationData from "./Home.json";
+import winnerAnimationData from "./Trophy.json";
 
 interface SectionAnimProps {
-  type: "pending" | "approved" | "rejected";
+  type: "pending" | "approved" | "rejected" | "home" | "winner";
   shouldPlay?: boolean;
   showLastFrame?: boolean;
 }
@@ -19,10 +21,14 @@ const SectionAnim: React.FC<SectionAnimProps> = ({
 
   const animationData =
     type === "approved"
-      ? approveAnimationData
-      : type === "rejected"
-      ? rejectedAnimationData
-      : pendingAnimationData;
+    ? approveAnimationData
+    : type === "rejected"
+    ? rejectedAnimationData
+    : type === "home"
+    ? homeAnimationData
+    : type === "winner"
+    ? winnerAnimationData
+    : pendingAnimationData;
 
   useEffect(() => {
     if (lottieRef.current) {
