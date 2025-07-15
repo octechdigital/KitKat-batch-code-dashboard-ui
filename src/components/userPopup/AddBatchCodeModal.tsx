@@ -156,7 +156,7 @@ const AddBatchCodeModal: React.FC<AddBatchCodeModalProps> = ({
         </IconButton>
 
         <Typography fontWeight="bold" fontSize={20} textAlign="center">
-          Britannia Breads – Batch Code Entry
+          Kit Kat Spotify - Batch Code Entry
         </Typography>
 
         <Box mt={3} textAlign="center">
