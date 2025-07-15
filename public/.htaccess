@@ -2,9 +2,9 @@ SetEnvIf Authorization "(.*)" HTTP_AUTHORIZATION=$1
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
-  RewriteBase /admin
+  RewriteBase /kitkat-spotify/admin
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
   RewriteCond %{REQUEST_FILENAME} !-l
-  RewriteRule . /admin/index.html [L]
+  RewriteRule . /kitkat-spotify/admin/index.html [L]
 </IfModule>
