@@ -40,8 +40,12 @@ class APIS {
   }
 
   // login
-  async login(email: string, password: string): Promise<LoginResponse> {
-    return unauthorisedApiCall("/admin/login", { email, password })
+  async login(
+    email: string,
+    password: string,
+    token: string
+  ): Promise<LoginResponse> {
+    return unauthorisedApiCall("/admin/login", { email, password, token })
       .then(fetchHandler)
       .then(responseHelper)
       .catch(defaultCatch)

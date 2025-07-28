@@ -41,7 +41,7 @@ const Login = () => {
   });
 
   const onSubmit: SubmitHandler<FormInputs> = (data: FormInputs) => {
-    API.login(data.email, data.password)
+    API.login(data.email, data.password ,'')
       .then((resp) => {
         showToast("success", "You have been logged in successfully!");
         store.dispatch(setAccessToken(resp.data.token));

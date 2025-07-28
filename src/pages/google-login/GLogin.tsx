@@ -86,7 +86,7 @@ const GLogin = () => {
     if (!cloudFlareToken) {
       return showToast("error", "Verification failed");
     }
-    API.login(values.email, values.password)
+    API.login(values.email, values.password, cloudFlareToken)
       .then((resp) => {
         const key = resp?.data?.key;
         if (key) {
@@ -98,7 +98,7 @@ const GLogin = () => {
           showToast("error", "Failed to get OTP key");
         }
       })
-      .catch((e) => showToast("error", e));
+      .catch((e) => showToast("error", e.message));
   };
 
   // Step 2: Verify OTP
@@ -114,7 +114,7 @@ const GLogin = () => {
           showToast("error", "Failed to retrieve access token");
         }
       })
-      .catch((e) => showToast("error", e));
+      .catch((e) => showToast("error", e.message));
   };
 
   return (
