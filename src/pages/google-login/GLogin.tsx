@@ -1,15 +1,17 @@
-import "./GLogin.scss";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { Logo } from "../../lib/images";
-import API from "../../api";
-import { useNavigate } from "react-router";
-import { ROUTES } from "../../lib/consts";
-import { RootState, store } from "../../store/store";
-import { setAccessToken } from "../../store/slices/authSlice";
-import { showToast } from "../../lib/utils";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import * as Yup from "yup";
+import API from "../../api";
+import { ROUTES } from "../../lib/consts";
+import { Logo } from "../../lib/images";
+import { showToast } from "../../lib/utils";
+import { setAccessToken } from "../../store/slices/authSlice";
+import { RootState, store } from "../../store/store";
+import "./GLogin.scss";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+declare const turnstile: any;
 
 interface FormInputs {
   email: string;
@@ -42,6 +44,37 @@ const GLogin = () => {
   const [tempKey, setTempKey] = useState("");
   const [email, setEmail] = useState("");
 
+  const [cloudFlareToken, setCloudFareToken] = useState("");
+  const [reset, setReset] = useState(false);
+  const widgetId = useRef<string | null>(null);
+  const timer = useRef<NodeJS.Timeout | null>(null);
+
+  const initializeTurnstileWidget = () => {
+    if (typeof turnstile !== "undefined") {
+      turnstile.ready(() => {
+        if (!widgetId.current) {
+          widgetId.current = turnstile.render("#cf-turnstile-otp", {
+            sitekey: import.meta.env.VITE_API_CLOUDFARE_SITE_KEY,
+            theme: "light",
+            callback: (token: string) => {
+              setCloudFareToken(token);
+            },
+          });
+        }
+      });
+    } else {
+      console.error("Turnstile script not loaded. Retrying...");
+      timer.current = setTimeout(() => {
+        setReset((p) => !p);
+      }, 3000);
+    }
+  };
+
+  useEffect(() => {
+    initializeTurnstileWidget();
+    if (timer.current) clearTimeout(timer.current);
+  }, [reset]);
+
   useEffect(() => {
     if (accessToken) {
       navigate(ROUTES.PENDING);
@@ -50,6 +83,9 @@ const GLogin = () => {
 
   // Step 1: Login with email & password
   const handleCredentialsSubmit = (values: FormInputs) => {
+    if (!cloudFlareToken) {
+      return showToast("error", "Verification failed");
+    }
     API.login(values.email, values.password)
       .then((resp) => {
         const key = resp?.data?.key;
@@ -62,7 +98,7 @@ const GLogin = () => {
           showToast("error", "Failed to get OTP key");
         }
       })
-      .catch(() => showToast("error", "Invalid email or password"));
+      .catch((e) => showToast("error", e));
   };
 
   // Step 2: Verify OTP
@@ -78,7 +114,7 @@ const GLogin = () => {
           showToast("error", "Failed to retrieve access token");
         }
       })
-      .catch(() => showToast("error", "Invalid OTP"));
+      .catch((e) => showToast("error", e));
   };
 
   return (
@@ -96,7 +132,7 @@ const GLogin = () => {
       <section className="login-r">
         {step === "credentials" ? (
           <Formik
-            initialValues={{ email: "", password: "", otp: ""}}
+            initialValues={{ email: "", password: "", otp: "" }}
             validationSchema={credentialsSchema}
             onSubmit={handleCredentialsSubmit}
           >
@@ -134,7 +170,7 @@ const GLogin = () => {
                     className="error-message"
                   />
                 </div>
-
+                <div id={"cf-turnstile-otp"} />
                 <button type="submit" className="submit-button">
                   Get OTP
                 </button>
