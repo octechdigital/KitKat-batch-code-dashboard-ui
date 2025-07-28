@@ -18,7 +18,6 @@ import {
 } from "./utils";
 
 class APIS {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   private showLoader = (loaderTitle?: string | undefined) => {};
   private hideLoader = (loaderTitle?: string | undefined) => {};
   private static instance: APIS | null = null;
@@ -72,7 +71,7 @@ class APIS {
       .catch(defaultCatch)
       .finally();
   }
-// get winner data
+  // get winner data
   async getWinnerData(): Promise<GetAnyDataResponse> {
     return authorisedApiCall("/admin/getWinnersInfo", {}, "GET")
       .then(fetchHandler)
@@ -125,7 +124,7 @@ class APIS {
       .catch(defaultCatch);
   }
 
- // In your API file
+  // In your API file
   // async userAction<T = BaseResponse>(
   //   endpoint: "addCode",
   //   payload: Record<string, any> = {}
@@ -139,17 +138,17 @@ class APIS {
   // }
 
   // In your API file
-async userAction<T = BaseResponse>(
-  endpoint: "addCode" | "createWinner", // Add other allowed endpoints here if needed
-  payload: Record<string, any> = {}
-): Promise<T> {
-  const finalPayload = { ...payload };
+  async userAction<T = BaseResponse>(
+    endpoint: "addCode" | "createWinner", // Add other allowed endpoints here if needed
+    payload: Record<string, any> = {}
+  ): Promise<T> {
+    const finalPayload = { ...payload };
 
-  return authorisedApiCall(`/admin/${endpoint}`, finalPayload, "POST") // Explicitly setting method to POST
-    .then(fetchHandler)
-    .then(responseHelper)
-    .catch(defaultCatch);
-}
+    return authorisedApiCall(`/admin/${endpoint}`, finalPayload, "POST") // Explicitly setting method to POST
+      .then(fetchHandler)
+      .then(responseHelper)
+      .catch(defaultCatch);
+  }
 }
 const API = APIS.getInstance();
 
