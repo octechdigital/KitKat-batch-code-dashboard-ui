@@ -26,6 +26,7 @@
     "ag-grid-react": "^33.0.3",
     "axios": "^1.9.0",
     "crypto-js": "^4.2.0",
+    "formik": "^2.4.6",
     "jssha": "^3.3.1",
     "lexical": "^0.23.1",
     "lottie-react": "^2.4.1",

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { createBrowserRouter } from "react-router";
 import { ROUTES } from "../lib/consts.ts";
 import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout.tsx";
@@ -7,13 +8,14 @@ import Pending from "../pages/dashboard/Pending.tsx";
 import PrivateRoute from "../helpers/PrivateRoute.tsx";
 import WinnerDeclaration from "../pages/dashboard/WinnerDeclaration.tsx";
 import Wiiner_List from "../pages/dashboard/Wiiner_List.tsx";
+import GLogin from "../pages/google-login/GLogin.tsx";
 // import Rejected from "../pages/dashboard/Rejected.tsx";
 
 export const router = createBrowserRouter(
   [
     {
       path: ROUTES.HOME_PAGE,
-      element: <Login />,
+      element: <GLogin />,
     },
     {
       element: (

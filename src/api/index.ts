@@ -39,6 +39,7 @@ class APIS {
     this.hideLoader = hideLoader;
   }
 
+  // login
   async login(email: string, password: string): Promise<LoginResponse> {
     return unauthorisedApiCall("/admin/login", { email, password })
       .then(fetchHandler)
@@ -47,6 +48,15 @@ class APIS {
       .finally();
   }
 
+  // verifyOtp
+  async verifyOtp(otp: string, key: string): Promise<any> {
+    return unauthorisedApiCall("/admin/verifyOtp", { otp, key })
+      .then(fetchHandler)
+      .then(responseHelper)
+      .catch(defaultCatch);
+  }
+
+  // logout
   async logout(): Promise<BaseResponse> {
     this.showLoader("Logout...");
     return authorisedApiCall("/admin/logout", {}, "GET")

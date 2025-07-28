@@ -11,6 +11,7 @@ export interface GenericRecord {
 export interface LoginResponse extends BaseResponse {
   data: {
     token: string;
+    key:string
   };
 }
 
