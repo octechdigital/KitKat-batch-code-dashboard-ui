@@ -15,7 +15,7 @@ interface FormInputs {
   email: string;
   password: string;
   otp?: string;
-  key?:string;
+  key?: string;
 }
 
 // Validation schemas
@@ -96,7 +96,7 @@ const GLogin = () => {
       <section className="login-r">
         {step === "credentials" ? (
           <Formik
-            initialValues={{ email: "", password: "" }}
+            initialValues={{ email: "", password: "", otp: ""}}
             validationSchema={credentialsSchema}
             onSubmit={handleCredentialsSubmit}
           >
@@ -111,7 +111,7 @@ const GLogin = () => {
                   <Field
                     type="email"
                     name="email"
-                    placeholder="Email"
+                    placeholder="Enter your Email"
                     autoComplete="username"
                   />
                   <ErrorMessage
@@ -125,7 +125,7 @@ const GLogin = () => {
                   <Field
                     type="password"
                     name="password"
-                    placeholder="Password"
+                    placeholder="Enter your Password"
                     autoComplete="current-password"
                   />
                   <ErrorMessage
