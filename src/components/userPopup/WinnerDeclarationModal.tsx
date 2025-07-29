@@ -1,28 +1,27 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React, { useState, ChangeEvent } from "react";
-import {
-  Dialog,
-  DialogContent,
-  Typography,
-  TextField,
-  Button,
-  IconButton,
-  Box,
-  ToggleButton,
-  ToggleButtonGroup,
-} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogContent,
+  IconButton,
+  TextField,
+  ToggleButtonGroup,
+  Typography,
+} from "@mui/material";
+import React, { ChangeEvent, useState } from "react";
 import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../store/store";
+import API from "../../api";
+import { useGlobalLoaderContext } from "../../helpers/GlobalLoader";
+import { showToast } from "../../lib/utils";
+import { useAppSelector } from "../../store/hooks";
 import {
   setIsHeaderRefreshed,
   setIsRefreshed,
 } from "../../store/slices/userSlice";
-import { showToast } from "../../lib/utils";
-import API from "../../api";
-import { useGlobalLoaderContext } from "../../helpers/GlobalLoader";
-import { useAppSelector } from "../../store/hooks";
+import { AppDispatch } from "../../store/store";
 
 interface WinnerDeclarationModalProps {
   open: boolean;
@@ -34,6 +33,13 @@ const isValidMobile = (mobile: string): boolean => {
   return /^[6-9]\d{9}$/.test(mobile);
 };
 
+// Function to get yesterday in YYYY-MM-DD format
+const getYesterday = () => {
+  const date = new Date();
+  date.setDate(date.getDate() - 1); // yesterday
+  return date.toISOString().split("T")[0];
+};
+
 const WinnerDeclarationModal: React.FC<WinnerDeclarationModalProps> = ({
   open,
   onClose,
@@ -42,9 +48,11 @@ const WinnerDeclarationModal: React.FC<WinnerDeclarationModalProps> = ({
   const [mobile, setMobile] = useState("");
   const [csvMobiles, setCsvMobiles] = useState<string[]>([]);
   const [fileName, setFileName] = useState("");
-  const [selectedDate, setSelectedDate] = useState(
-    new Date().toISOString().split("T")[0]
-  );
+
+  const [selectedDate, setSelectedDate] = useState(""); // empty by default
+  // const [selectedDate, setSelectedDate] = useState(
+  //   new Date().toISOString().split("T")[0]
+  // );
 
   const dispatch = useDispatch<AppDispatch>();
   const { showLoader, hideLoader } = useGlobalLoaderContext();
@@ -229,6 +237,9 @@ const WinnerDeclarationModal: React.FC<WinnerDeclarationModalProps> = ({
             onChange={(e) => setSelectedDate(e.target.value)}
             fullWidth
             InputLabelProps={{ shrink: true }}
+            inputProps={{
+              max: getYesterday(), // yesterday is the latest allowed date
+            }}
           />
         </Box>
 

@@ -36,6 +36,7 @@ const otpSchema = Yup.object({
     .required("OTP is required"),
 });
 
+
 const GLogin = () => {
   const navigate = useNavigate();
   const accessToken = useSelector((state: RootState) => state.auth.accessToken);
